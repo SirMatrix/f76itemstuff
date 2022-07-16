@@ -69,6 +69,9 @@ pub fn make_document(){
     let _ = writer::xlsx::write(&book, spreadsheet);
 }
 
+
+
+
 pub fn writer(sheet: String, column: String, row: String, value: i32)
 {
 
@@ -80,6 +83,7 @@ pub fn read_sheet_string(sheet: String, ini: bool) -> Vec<String>
     let mut init = ini;
     let mut book = reader::xlsx::lazy_read(spreadsheet).unwrap();
     let mut vecthing = Vec::new();
+    let empty = "".to_string();
     while init == true {
         let mut b = book.get_sheet_by_name_mut(&sheet).unwrap().get_value_by_column_and_row(&1, &cnt);
         let a  = [b.as_mut_str()];
@@ -97,6 +101,7 @@ pub fn read_sheet_string(sheet: String, ini: bool) -> Vec<String>
         
     }
     init = false;
+    vecthing.retain(|x| *x != empty);
    vecthing
 }
 pub fn read_sheet_val(sheet: String, ini: bool) -> Vec<String>
@@ -106,6 +111,7 @@ pub fn read_sheet_val(sheet: String, ini: bool) -> Vec<String>
     let mut init = ini;
     let mut book = reader::xlsx::lazy_read(spreadsheet).unwrap();
     let mut vecthing = Vec::new();
+    let empty = "".to_string();
     while init == true{
         let mut b = book.get_sheet_by_name_mut(&sheet).unwrap().get_value_by_column_and_row(&2, &cnt);
         let a = [b.as_mut_str()];
@@ -120,6 +126,7 @@ pub fn read_sheet_val(sheet: String, ini: bool) -> Vec<String>
         
     }
     init = false;
+    vecthing.retain(|x| *x != empty);
     vecthing
 
 }
