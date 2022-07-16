@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::fs;
-use std::env;
 use std::io::Write;
 use std::path::Path;
 
@@ -41,7 +40,7 @@ pub fn file_size()
     let docs = vec!["bobbleheads.txt", "magazines.txt", "plans.txt", "apparel.txt"];
     let mut i  = docs.iter();
     while let Some(v)= i.next(){
-        let mut f = File::open(format!("generated_files/{}", v)).expect("Couldn't open files!");
+        let  f = File::open(format!("generated_files/{}", v)).expect("Couldn't open files!");
         let meta = f.metadata().expect("No Data Found!");
         if meta.len() == 0 {
           write_data();

@@ -12,8 +12,8 @@ fn main() {
     utils::files::file_checker();
     utils::files::file_size();
     utils::sheets::make_document();
-    let test = utils::sheets::read_sheet("Bobble Heads".to_string(), true);
-    println!("{:?}", test.len());
+    let test = utils::sheets::read_sheet_val("Bobble Heads".to_string(), true);
+    println!("{:?}", test);
     let application = gtk::Application::new(
         Some("com.github.gtk-rs.examples.menu_bar_system"),
         Default::default(),
