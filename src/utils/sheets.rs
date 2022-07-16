@@ -38,7 +38,7 @@ pub fn make_document(){
         let mut i = add_bobbles.iter();
         while let Some(v) = i.next() {
         book.get_sheet_by_name_mut("Bobble Heads").unwrap().get_cell_by_column_and_row_mut(&1, &cnt).set_value(v);
-        book.get_sheet_by_name_mut("Bobble Heads").unwrap().get_cell_by_column_and_row_mut(&2, &cnt).set_value_from_i32(0);
+        book.get_sheet_by_name_mut("Bobble Heads").unwrap().get_cell_by_column_and_row_mut(&2, &cnt).set_value_from_i32(0); //We want to default the value to 0 since we don't know if we have any of the items yet
         cnt = cnt +1; 
 
         }
@@ -69,19 +69,11 @@ pub fn make_document(){
     let _ = writer::xlsx::write(&book, spreadsheet);
 }
 
-pub fn writer_static(sheet: String, column: String, row: String, value: i32)
+pub fn writer(sheet: String, column: String, row: String, value: i32)
 {
 
 }
-pub fn writer_market(sheet: String, column: String, row: String, value: i32)
-{
-
-}
-pub fn writer_ff(sheet: String, column: String, row: String, item_type: String, location: String)
-{
-
-}
-pub fn read_sheet(sheet: String, ini: bool) -> Vec<String>
+pub fn read_sheet_string(sheet: String, ini: bool) -> Vec<String>
 {
     let spreadsheet = Path::new("items.xlsx");
     let mut cnt = 0;
@@ -89,8 +81,7 @@ pub fn read_sheet(sheet: String, ini: bool) -> Vec<String>
     let mut book = reader::xlsx::lazy_read(spreadsheet).unwrap();
     let mut vecthing = Vec::new();
     while init == true {
-        let mut b =book.get_sheet_by_name_mut(&sheet).unwrap().get_value_by_column_and_row(&1, &cnt);
-       
+        let mut b = book.get_sheet_by_name_mut(&sheet).unwrap().get_value_by_column_and_row(&1, &cnt);
         let a  = [b.as_mut_str()];
         let mut i = a.into_iter();
         while let Some(v) = i.next() {
@@ -99,14 +90,36 @@ pub fn read_sheet(sheet: String, ini: bool) -> Vec<String>
         }
         cnt = cnt + 1;
         if cnt > 98 {
-           
+           //hacky way to read all the cells
+           //TODO: Make it read the cells that have values only so we dont get extra space when viewing in the program.
             break;
         }
         
     }
     init = false;
    vecthing
-
-   
+}
+pub fn read_sheet_val(sheet: String, ini: bool) -> Vec<String>
+{
+    let spreadsheet = Path::new("items.xlsx");
+    let mut cnt = 0;
+    let mut init = ini;
+    let mut book = reader::xlsx::lazy_read(spreadsheet).unwrap();
+    let mut vecthing = Vec::new();
+    while init == true{
+        let mut b = book.get_sheet_by_name_mut(&sheet).unwrap().get_value_by_column_and_row(&2, &cnt);
+        let a = [b.as_mut_str()];
+        let mut i = a.into_iter();
+        while let Some(v) = i.next(){
+            vecthing.push(v.to_string())
+        }
+        cnt = cnt +1;
+        if cnt > 98{
+            break;
+        }
+        
+    }
+    init = false;
+    vecthing
 
 }
