@@ -25,18 +25,19 @@ impl Default for AppConfig{
 #[derive(Default, Debug)]
 
 pub struct MainApp{
-    itemnames: String
+    genwindow: bool,
 }
 
 
 impl MainApp {
    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    MainApp{genwindow: false};
         Self::default()
     }
-    fn gen_window(&mut self, ctx: &egui::Context, winname: String, sheet: String, open: &mut bool){
-         egui::Window::new(winname).open(open).show(ctx, |ui|{
-            let gatherstrings = read_sheet_string(sheet.to_string(), true);
-            let gathervals = read_sheet_val(sheet, true);
+    fn gen_bobbles(&mut self, ctx: &egui::Context){
+         egui::Window::new("Bobble Heads").open(&mut self.genwindow).show(ctx, |ui|{
+            let gatherstrings = read_sheet_string("Bobble Heads".to_string(), true);
+            let gathervals = read_sheet_val("Bobble Heads".to_string(), true);
             for a in gatherstrings{
                 println!("{}", a.to_string());
                 ui.add_space(PADDING);
@@ -66,7 +67,7 @@ impl MainApp {
                     ui.menu_button("Load Data",|ui|{
                         ui.menu_button("Collectibles", |ui|{
                             if ui.button("Bobble Heads").clicked(){
-                                self.gen_window(ctx, "Bobble Heads".to_string(), "Bobble Heads".to_string(), &mut true);
+                                self.genwindow = true;
                                 println!("Clicked");
 
                             }
@@ -102,6 +103,7 @@ impl eframe::App for MainApp {
             self.menu_bar(ctx, frame);
             //self.gen_window(ctx, "Test".to_string(), "Bobble Heads".to_string());
             ctx.set_visuals(Visuals::dark());
+            self.gen_bobbles(ctx);
           
         });
     }
