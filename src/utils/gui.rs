@@ -1,5 +1,5 @@
 use eframe::egui;
-use egui::{TopBottomPanel, Layout, Label, Visuals, Checkbox, Button, Window, Color32, CentralPanel, ScrollArea};
+use egui::{TopBottomPanel, Layout, Label, Visuals, Checkbox, Button, Window, Color32, CentralPanel, ScrollArea, Ui};
 use serde::{Serialize, Deserialize};
 use tracing::Subscriber;
 use super::sheets::*;
@@ -27,27 +27,31 @@ impl Default for AppConfig{
 pub struct MainApp{
     itemnames: String
 }
-#[derive(Default, Debug)]
-struct StoredData{
-  
 
-}
 
 impl MainApp {
    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         Self::default()
     }
-    fn fetch_data(&mut self ,ui: &mut eframe::egui::Ui, sheet: String){
-        let gatherstrings = read_sheet_string(sheet.to_string(), true);
-        let strings = gatherstrings.into_iter().collect();
-        let x = MainApp{ itemnames: strings };
-        for a in self.itemnames.chars(){
-            ui.add_space(PADDING);
-            let items = format!("{:?}", a);
-            ui.colored_label(WHITE, items);
+    fn gen_window(&mut self, ctx: &egui::Context, winname: String, sheet: String, open: &mut bool){
+         egui::Window::new(winname).open(open).show(ctx, |ui|{
+            let gatherstrings = read_sheet_string(sheet.to_string(), true);
+            let gathervals = read_sheet_val(sheet, true);
+            for a in gatherstrings{
+                println!("{}", a.to_string());
+                ui.add_space(PADDING);
+                let items = format!("{}", a);
+                ui.colored_label(WHITE, items);
+            }
+            for a in gathervals{
+                println!("{}", a);
+                ui.add_space(PADDING);
+                let items = format!("{}", a);
+                ui.colored_label(WHITE, items);
+    
+            }
 
-        }
-       
+        });
     }
     fn menu_bar(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame){
         TopBottomPanel::top("top_panel").show(ctx, |ui|{
@@ -62,9 +66,8 @@ impl MainApp {
                     ui.menu_button("Load Data",|ui|{
                         ui.menu_button("Collectibles", |ui|{
                             if ui.button("Bobble Heads").clicked(){
-                             ScrollArea::both().show(ui, |ui|{
+                                self.gen_window(ctx, "Bobble Heads".to_string(), "Bobble Heads".to_string(), &mut true);
                                 println!("Clicked");
-                             });
 
                             }
                             if ui.button("Magazines").clicked(){
@@ -97,6 +100,7 @@ impl eframe::App for MainApp {
         egui::CentralPanel::default().show(ctx, |ui|{
             ui.heading("Test");
             self.menu_bar(ctx, frame);
+            //self.gen_window(ctx, "Test".to_string(), "Bobble Heads".to_string());
             ctx.set_visuals(Visuals::dark());
           
         });
